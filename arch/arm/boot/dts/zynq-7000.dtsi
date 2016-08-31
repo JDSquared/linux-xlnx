@@ -19,7 +19,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		cpu0: cpu@0 {
+		cpu@0 {
 			compatible = "arm,cortex-a9";
 			device_type = "cpu";
 			reg = <0>;
@@ -33,7 +33,7 @@
 			>;
 		};
 
-		cpu1: cpu@1 {
+		cpu@1 {
 			compatible = "arm,cortex-a9";
 			device_type = "cpu";
 			reg = <1>;
@@ -58,6 +58,7 @@
 	};
 
 	amba: amba {
+		u-boot,dm-pre-reloc;
 		compatible = "simple-bus";
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -70,6 +71,15 @@
 			interrupts = <0 7 4>;
 			interrupt-parent = <&intc>;
 			clocks = <&clkc 12>;
+		};
+
+
+		base_fpga_region: base_fpga_region {
+			compatible = "fpga-region";
+			fpga-mgr = <&devcfg>;
+			#address-cells = <0x1>;
+			#size-cells = <0x1>;
+			ranges;		
 		};
 
 		can0: can@e0008000 {
@@ -99,10 +109,10 @@
 		gpio0: gpio@e000a000 {
 			compatible = "xlnx,zynq-gpio-1.0";
 			#gpio-cells = <2>;
+			#interrupt-cells = <2>;
 			clocks = <&clkc 42>;
 			gpio-controller;
 			interrupt-controller;
-			#interrupt-cells = <2>;
 			interrupt-parent = <&intc>;
 			interrupts = <0 20 4>;
 			reg = <0xe000a000 0x1000>;
@@ -286,7 +296,7 @@
 		slcr: slcr@f8000000 {
 			#address-cells = <1>;
 			#size-cells = <1>;
-			compatible = "xlnx,zynq-slcr", "syscon", "simple-mfd";
+			compatible = "xlnx,zynq-slcr", "syscon", "simple-bus";
 			reg = <0xF8000000 0x1000>;
 			ranges;
 			clkc: clkc@100 {
@@ -348,6 +358,7 @@
 			clock-names = "ref_clk", "fclk0", "fclk1", "fclk2", "fclk3";
 			syscon = <&slcr>;
 		};
+
 
 		global_timer: timer@f8f00200 {
 			compatible = "arm,cortex-a9-global-timer";
